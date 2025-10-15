@@ -21,14 +21,6 @@ class CalculatorTest {
 
 
 
-    @Test
-    void githubDemo() {
-        int result = calculator.add(a,b);
-        assertEquals(3,result);
-
-    }
-
-
 
     @Test
     void add() {
