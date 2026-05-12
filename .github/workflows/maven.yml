@@ -11,11 +11,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -23,7 +23,7 @@ jobs:
 
       # --- Steg 3: Cacha Chrome och Selenium ---
       - name: Cache Chrome binaries
-        uses: actions/cache@v3             # Cacha filer mellan körningar
+        uses: actions/cache@v5             # Cacha filer mellan körningar
         with:
           path: |                          # Vilka mappar som ska sparas
             ~/.cache/chromium             
@@ -63,7 +63,7 @@ jobs:
 
       - name: Upload test reports
         if: always()                      # Kör även om tidigare steg misslyckas
-        uses: actions/upload-artifact@v4  # Ladda upp filer som artefakter
+        uses: actions/upload-artifact@v5  # Ladda upp filer som artefakter
         with:
           name: surefire-reports          # Namn på artefakten (syns i Actions)
           path: target/surefire-reports/  # Mappen där JUnit-rapporterna sparas
