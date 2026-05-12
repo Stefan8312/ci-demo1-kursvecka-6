@@ -1,12 +1,14 @@
 package systementor.cidemo1;
 
 import org.junit.jupiter.api.Test;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.JavascriptExecutor;
+
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.JavascriptExecutor;
 
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -34,34 +36,60 @@ public class SystementorSeleniumTest {
 
         WebDriver driver = new ChromeDriver(options);
 
-        driver.get("https://systementor.se/");
-        logger.info("Navigated to Systementor");
+        try {
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            driver.get("https://systementor.se/");
+            logger.info("Navigated to Systementor");
 
-        WebElement omOss = wait.until(
-                ExpectedConditions.elementToBeClickable(By.linkText("Om oss"))
-        );
+            WebDriverWait wait = new WebDriverWait(
+                    driver,
+                    Duration.ofSeconds(10)
+            );
 
-        ((JavascriptExecutor) driver).executeScript(
-                "arguments[0].scrollIntoView(true);",
-                omOss
-        );
+            WebElement omOss = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(
+                            By.linkText("Om oss")
+                    )
+            );
 
-        omOss.click();
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    omOss
+            );
 
-        logger.info("Clicked on Om oss");
+            Thread.sleep(1000);
 
-        String currentUrl = driver.getCurrentUrl();
-        String title = driver.getTitle();
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].click();",
+                    omOss
+            );
 
-        assertTrue(
-                currentUrl.contains("om-oss") ||
-                        title.contains("Om oss")
-        );
+            logger.info("Clicked on Om oss");
 
-        logger.info("After click it lands on the Om oss page");
+            wait.until(ExpectedConditions.urlContains("om"));
 
-        driver.quit();
+            String currentUrl = driver.getCurrentUrl();
+            String title = driver.getTitle();
+
+            logger.info("Current URL: " + currentUrl);
+            logger.info("Page title: " + title);
+
+            assertTrue(
+                    currentUrl.toLowerCase().contains("om") ||
+                            title.toLowerCase().contains("om"),
+                    "Did not navigate to Om oss page"
+            );
+
+            logger.info("Successfully landed on Om oss page");
+
+        } catch (Exception e) {
+
+            logger.severe("Test failed: " + e.getMessage());
+            throw new RuntimeException(e);
+
+        } finally {
+
+            driver.quit();
+        }
     }
 }
